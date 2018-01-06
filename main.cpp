@@ -70,6 +70,7 @@ int main() {
 		//auto data = getRestJSONData();
 		//std::cout << getPendingPayment(data, "4058609956838583597");
 		Fl_Window window(1024,768);
+		window.clear_border();
 		Fl_Box box(20,40,300,200,"Hello!");
 		box.box(FL_UP_BOX);
 		box.labelfont(FL_BOLD+FL_ITALIC);
