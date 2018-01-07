@@ -11,6 +11,12 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
+#include <FL/x.H>
+
+#include "status_window.h"
+
+#include <chrono>
+#include <thread>
 
 std::vector<char> getRestJSONData() {
 	std::vector<char> http_data;
@@ -66,17 +72,22 @@ double getPendingPayment(std::vector<char> json_data, const std::string &account
 	}
 	return val; //actually throw an error
 }
+
+
 int main() {
 		//auto data = getRestJSONData();
 		//std::cout << getPendingPayment(data, "4058609956838583597");
-		Fl_Window window(1024,768);
-		window.clear_border();
-		Fl_Box box(20,40,300,200,"Hello!");
-		box.box(FL_UP_BOX);
-		box.labelfont(FL_BOLD+FL_ITALIC);
-		box.labelsize(36);
-		box.labeltype(FL_SHADOW_LABEL);
+		StatusWindow window(100,64);
+		
+		//MWM_DECOR_MENU
+		//XChangeProperty
+		//PropModeReplace
+
+	
+	
 		window.end();
 		window.show();
+		//_NET_WM_STATE_ABOVE
+
 		return Fl::run();
 }
