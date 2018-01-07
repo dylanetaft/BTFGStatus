@@ -1,0 +1,32 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0304
+header_name {.h}
+code_name {.cxx}
+decl {\#include "config_observable.h"} {public global
+}
+
+class ConfigWindowFactory {: ConfigObservable
+} {
+  Function {make_window()} {open
+  } {
+    Fl_Window ConfigWindow {open
+      xywh {248 509 305 155} type Single visible
+    } {
+      Fl_Button {} {
+        label Apply
+        callback {ConfigWindow->hide();}
+        xywh {5 120 115 30}
+      }
+      Fl_Button {} {
+        label Cancel
+        xywh {190 120 110 30}
+      }
+      Fl_Value_Input AccountIdInput {
+        label {Wallet ID \#}
+        xywh {90 10 205 30} maximum 1e+19 step 1
+      }
+    }
+  }
+  Function {addObserver(const ConfigObserver &observer)} {open
+  } {}
+}
