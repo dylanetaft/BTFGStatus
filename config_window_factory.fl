@@ -1,0 +1,39 @@
+# data file for the Fltk User Interface Designer (fluid)
+version 1.0304
+header_name {.h}
+code_name {.cxx}
+decl {\#include "btfg_config_observable.h"} {public global
+}
+
+decl {\#include <map>} {public global
+}
+
+decl {\#include <string>} {public global
+}
+
+class ConfigWindowFactory {open : {public BTFGConfigObservable}
+} {
+  Function {make_window()} {open
+  } {
+    Fl_Window ConfigWindow {open selected
+      xywh {248 509 305 155} type Single modal visible
+    } {
+      Fl_Button {} {
+        label Apply
+        callback {std::map<std::string, std::string> config;
+  config["account_id"] = AccountIdInput->value();
+  notifyObservers(config);
+  ConfigWindow->hide();}
+        xywh {5 120 115 30}
+      }
+      Fl_Button {} {
+        label Cancel
+        xywh {190 120 110 30}
+      }
+      Fl_Value_Input AccountIdInput {
+        label {Wallet ID \#}
+        xywh {90 10 205 30} maximum 1e+19 step 1
+      }
+    }
+  }
+}
