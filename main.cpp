@@ -13,8 +13,11 @@
 #include <FL/Fl_Box.H>
 #include <FL/x.H>
 
-#include "status_window.h"
+#include "btfg_controller.h"
 
+
+#include <map>
+#include <memory>
 #include <chrono>
 #include <thread>
 
@@ -73,11 +76,13 @@ double getPendingPayment(std::vector<char> json_data, const std::string &account
 	return val; //actually throw an error
 }
 
-
 int main() {
-		//auto data = getRestJSONData();
-		//std::cout << getPendingPayment(data, "4058609956838583597");
-		StatusWindow window(100,64);
+		//std::shared_ptr<BTFGController> controller = std::make_shared<BTFGController>();
+		auto data = getRestJSONData();
+	  std::cout << "Pending payout:" << getPendingPayment(data, "4058609956838583597");
+		BTFGController::getInstance().init();
+
+		
 		
 		//MWM_DECOR_MENU
 		//XChangeProperty
@@ -85,9 +90,8 @@ int main() {
 
 	
 	
-		window.end();
-		window.show();
+	
 		//_NET_WM_STATE_ABOVE
 
-		return Fl::run();
+		
 }
