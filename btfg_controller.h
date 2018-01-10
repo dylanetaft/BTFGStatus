@@ -8,22 +8,32 @@
 #include <iostream>
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
+#include "btfg_proto.h"
+#include <thread>
+#include <mutex>
 
 
-class BTFGController:public BTFGConfigObserver,
+class BTFGController:
  public std::enable_shared_from_this<BTFGController> {
 	public:
 		static BTFGController &getInstance() {
 			static BTFGController *rptr = new BTFGController();
 			static std::shared_ptr<BTFGController> instance(rptr);
+			std::cout << &*rptr << "\n";
 			return *rptr;
 		}
 		void init();
-		void onConfigUpdate(std::map<std::string,std::string> newconfig) override;
 		void showConfigWindow();
-		
+		void setConfigProp(std::string prop, std::string val);
+		std::string getConfigProp(std::string prop);
 	private:
+		std::map<std::string,std::string> _currentConfig;
 		Fl_Window *configWindow;
+		BTFGProto _proto;
 		BTFGController(){};
+		void netThreadCall();
+		std::thread _netThread;
+		std::mutex _netMutex;
+		enum ThreadState {SLEEP, UPDATE, DIE} _netThreadState;
 };
 
