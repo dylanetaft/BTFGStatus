@@ -19,7 +19,6 @@ class BTFGController:
 		static BTFGController &getInstance() {
 			static BTFGController *rptr = new BTFGController();
 			static std::shared_ptr<BTFGController> instance(rptr);
-			std::cout << &*rptr << "\n";
 			return *rptr;
 		}
 		void init();
@@ -35,5 +34,7 @@ class BTFGController:
 		std::thread _netThread;
 		std::mutex _netMutex;
 		enum ThreadState {SLEEP, UPDATE, DIE} _netThreadState;
+		void saveConfig();
+		void loadConfig();
 };
 
