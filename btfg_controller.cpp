@@ -43,6 +43,8 @@ void BTFGController::loadConfig() {
 					std::string name = jsonstr->string;
 					std::string val = jsonstr->valuestring;
 					std::cout << name << ":" << val << "\n";
+					//set config properties, no need to call setConfigProp
+					_currentConfig[name] = val; //will make a copy of strings, no need to string::copy
 					jsonstr = jsonstr->next;
 				}
 			}
@@ -77,6 +79,7 @@ void BTFGController::saveConfig() {
 	cJSON_Delete(json);
 	
 }
+//void setConfigProps for multiple TODO
 void BTFGController::setConfigProp(std::string prop, std::string val) {
 	_netMutex.lock();
 	_currentConfig[prop] = val;
