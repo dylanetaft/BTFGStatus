@@ -53,7 +53,7 @@ void BTFGController::loadConfig() {
 		
 	}
 	else {
-		throw std::runtime_error("Error loading config file");
+		//no config file exists, not really an error
 	}
 	
 }
