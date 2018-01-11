@@ -1,0 +1,1 @@
+g++ -std=c++17 main.cpp status_window.cpp btfg_config_observable.cpp config_window_factory.cxx btfg_controller.cpp btfg_textbutton.cpp btfg_proto.cpp -o main -L/usr/local/lib -I/usr/local/include -lcurl -lcjson -lfltk -lpthread

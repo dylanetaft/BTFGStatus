@@ -52,7 +52,7 @@ void BTFGController::loadConfig() {
 		
 		cJSON_Delete(json);
 		delete(data);
-		std::cout << "ACCT ID:" << _currentConfig["account_id"] << "\n";
+		//std::cout << "ACCT ID:" << _currentConfig["account_id"] << "\n";
 		
 	}
 	else {
