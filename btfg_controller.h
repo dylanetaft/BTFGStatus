@@ -2,7 +2,6 @@
 #include <map>
 #include <string>
 #include <memory>
-#include "btfg_config_observer.h"
 #include "config_window_factory.h"
 #include "status_window.h"
 #include <iostream>
@@ -11,7 +10,7 @@
 #include "btfg_proto.h"
 #include <thread>
 #include <mutex>
-
+#include "btfg_enums.h"
 
 class BTFGController:
  public std::enable_shared_from_this<BTFGController> {
@@ -25,15 +24,23 @@ class BTFGController:
 		void showConfigWindow();
 		void setConfigProp(std::string prop, std::string val);
 		std::string getConfigProp(std::string prop);
+		void setStatusProp(std::string prop, std::string val);
+		std::string getStatusProp(std::string prop);
+		void refreshMinerData();
+		void refreshMinerStatusWindow(BTFGUIStatusState uiState);
 	private:
 		std::map<std::string,std::string> _currentConfig;
+		std::map<std::string,std::string> _currentStatus;
 		Fl_Window *configWindow;
+		StatusWindow *_statusWindow;
 		BTFGProto _proto;
 		BTFGController(){};
+		enum ThreadState {SLEEP, UPDATE, DIE} _netThreadState;
 		void netThreadCall();
+		void setThreadState(ThreadState state);
+		
 		std::thread _netThread;
 		std::mutex _netMutex;
-		enum ThreadState {SLEEP, UPDATE, DIE} _netThreadState;
 		void saveConfig();
 		void loadConfig();
 };

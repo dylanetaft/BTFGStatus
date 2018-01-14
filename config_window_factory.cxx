@@ -5,6 +5,7 @@
 
 void ConfigWindowFactory::cb_Apply_i(Fl_Button*, void*) {
   BTFGController::getInstance().setConfigProp("account_id",AccountIdInput->value());
+BTFGController::getInstance().refreshMinerData();
 ConfigWindow->hide();
 }
 void ConfigWindowFactory::cb_Apply(Fl_Button* o, void* v) {

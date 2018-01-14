@@ -23,6 +23,6 @@ int BTFGTextButton::handle(int event) {
 }
 
 void BTFGTextButton::draw() {
-	//parent()->damage(FL_DAMAGE_ALL,x(),y(),w(),h());
 	draw_label();
+	//parent()->damage(FL_DAMAGE_ALL,x(),y(),w(),h());
 }

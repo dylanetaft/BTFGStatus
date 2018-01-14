@@ -11,13 +11,13 @@ void BTFGController::init() {
 	configWindow = configfactory.make_window();
 	
 	ConfigWindowFactory configWindowFactory;
-	StatusWindow window(100,64);
+	_statusWindow = new StatusWindow(128,128);
 	Fl::lock();
-	window.layout();
-	window.show();
+	_statusWindow->layout();
+	_statusWindow->show();
 	std::cout << "Init\n";
 	loadConfig();
-	_netThreadState = UPDATE;
+	setThreadState(UPDATE);
 	_netThread = std::thread(&BTFGController::netThreadCall, this);
 	Fl::run();
 }
@@ -80,37 +80,69 @@ void BTFGController::saveConfig() {
 	cJSON_Delete(json);
 	
 }
-//void setConfigProps for multiple TODO
+void BTFGController::refreshMinerData() {
+	_netMutex.lock();
+	setThreadState(UPDATE);
+	_netMutex.unlock();
+}
+
+void BTFGController::refreshMinerStatusWindow(BTFGUIStatusState uiState) {
+		Fl::lock();
+			std::cout << "made it here 2\n";
+			_statusWindow->refresh(uiState);
+		Fl::unlock();
+	
+}
 void BTFGController::setConfigProp(std::string prop, std::string val) {
 	_netMutex.lock();
 	_currentConfig[prop] = val;
-	_netThreadState = UPDATE;
 	saveConfig();
 	_netMutex.unlock();
 }
+
+void BTFGController::setStatusProp(std::string prop, std::string val) {
+	std::cout << "setting status prop\n";
+	_netMutex.lock();
+	_currentStatus[prop] = val;
+	_netMutex.unlock();
+	std::cout << "setting status prop 2\n";
+}
+
 std::string BTFGController::getConfigProp(std::string prop) {
 	_netMutex.lock();
 	return _currentConfig[prop];
 	_netMutex.unlock();
 }
 
+std::string BTFGController::getStatusProp(std::string prop) {
+	_netMutex.lock();
+	return _currentStatus[prop];
+	_netMutex.unlock();
+}
+
+void BTFGController::setThreadState(ThreadState state) {
+	_netMutex.lock();
+	_netThreadState = state;
+	_netMutex.unlock();
+}
 void BTFGController::netThreadCall() {
 	for (;;) {
 		_netMutex.lock();
-		if (_netThreadState == UPDATE) { //update from net
-			_netMutex.unlock();
+		ThreadState mystate = _netThreadState;
+		_netMutex.unlock();
+		if (mystate == UPDATE) { //update from net
+			std::cout << "Made it here\n";
 			auto jsondata = _proto.getRestJSONData();
-			_netMutex.lock();
+			std::cout << "made it here 3\n";
 			double pendingVal = _proto.getPendingPayment(jsondata, _currentConfig["account_id"]);
-			std::cout << pendingVal << "\n";
-			_netThreadState = SLEEP;
-			_netMutex.unlock();
+			BTFGController &c = BTFGController::getInstance();
+			c.setStatusProp("pending_payout", std::to_string(pendingVal));
+			refreshMinerStatusWindow(BTFGUIStatusState::OK);
+			setThreadState(SLEEP);
 		}
-		else if (_netThreadState == DIE) {
-			_netMutex.unlock();
+		else if (mystate == DIE) {
 			break; //exit for loop
 		}
-		_netMutex.unlock();
 		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	}
 }

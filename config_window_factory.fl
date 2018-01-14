@@ -21,7 +21,8 @@ class ConfigWindowFactory {open
       Fl_Button {} {
         label Apply
         callback {BTFGController::getInstance().setConfigProp("account_id",AccountIdInput->value());
-ConfigWindow->hide();} selected
+BTFGController::getInstance().refreshMinerData();
+ConfigWindow->hide();}
         xywh {5 120 115 30}
       }
       Fl_Button {} {

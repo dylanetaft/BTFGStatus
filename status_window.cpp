@@ -1,8 +1,10 @@
 #include "status_window.h"
 #include <FL/Enumerations.H> 
 #include <FL/fl_draw.H>
-
+#include "btfg_enums.h"
 #include <FL/Fl_Box.H>
+#include "btfg_controller.h"
+
 #include <iostream>
 #include "btfg_controller.h"
 #include "btfg_textbutton.h"
@@ -25,6 +27,11 @@ void StatusWindow::buttonCallback(Fl_Button *obj, void *data) {
 	
 }
 
+void StatusWindow::refresh(BTFGUIStatusState uiState) {
+	BTFGController &c = BTFGController::getInstance();
+	pendingPaymentLabel_->updateMessage(uiState, "Pending Payment\n" + c.getStatusProp("pending_payout"));
+}
+
 void StatusWindow::layout() {
 	begin();
 	Fl_Box *window_handle_box = new Fl_Box(FL_BORDER_BOX,0,0,_SWIDTH,16,"BTFG Status");
@@ -32,6 +39,11 @@ void StatusWindow::layout() {
 	skip_taskbar(0);
 	window_handle_box->labelcolor(fl_rgb_color(177,100,2));
 	window_handle_box->color(fl_rgb_color(26,13,13));
+	
+	pendingPaymentLabel_ = new BTFGStatusLabel(2,24,_SWIDTH - 2,32);
+	pendingPaymentLabel_->updateMessage(BTFGUIStatusState::LOADING,std::string("Loading..."));
+
+
 	user_data((void*)(this));
 	BTFGTextButton *button = new BTFGTextButton(4, _SHEIGHT-24, 64, 16, "Config");
 	button->callback((Fl_Callback *)buttonCallback,(void *)"config_button");
